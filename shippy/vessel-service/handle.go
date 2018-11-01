@@ -27,7 +27,7 @@ func (h *handler) FindAvailable(ctx context.Context, req *pb.Specification, resp
 	return nil
 }
 
-func (h *handler) Create(ctx context.Context, req *pb.Vessel, resp *pb.Response) error {
+func (h *handler) Create(ctx context.Context, req *pb.Vessel, resp *pb.Response) (err error) {
 	defer h.GetRepo().Close()
 	if err := h.GetRepo().Create(req); err != nil {
 		fmt.Println("创建船只失败", err)

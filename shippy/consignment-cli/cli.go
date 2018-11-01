@@ -31,11 +31,11 @@ func parseFile(fileName string) (*pb.Consignment, error) {
 }
 
 func main() {
-	sercice := micro.NewService(micro.Name(" ShippingService"))
+	sercice := micro.NewService(micro.Name("ShippingService"))
 	sercice.Init()
 
 	// 创建微服务的客户端，简化了手动 Dial 连接服务端的步骤
-	client := pb.NewShippingServiceClient(" ShippingService", sercice.Client())
+	client := pb.NewShippingServiceClient("ShippingService", sercice.Client())
 
 	// 在命令行中指定新的货物信息 json 件
 	infoFile := DEFAULT_INFO_FILE

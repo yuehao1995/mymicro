@@ -32,7 +32,7 @@ func (h *handler) CreateConsignment(ctx context.Context, req *pb.Consignment, re
 	}
 	vResp, err := h.vesselClient.FindAvailable(context.Background(), vReq)
 	if err != nil {
-		fmt.Println("创建货物失败:", err)
+		fmt.Println("35创建货物失败:", err)
 		return err
 	}
 
@@ -42,7 +42,7 @@ func (h *handler) CreateConsignment(ctx context.Context, req *pb.Consignment, re
 	//consignment, err := h.repo.Create(req)
 	err = h.GetRepo().Create(req)
 	if err != nil {
-		fmt.Println("创建货物失败:", err)
+		fmt.Println("43创建货物失败:", err)
 		return err
 	}
 	resp.Created = true
