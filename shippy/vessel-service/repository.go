@@ -30,6 +30,7 @@ func (repo *VesselRepository) FindAvailable(spec *pb.Specification) (*pb.Vessel,
 		"capacity":  bson.M{"$gte": spec.Capacity},
 		"maxweight": bson.M{"$lte": spec.MaxWeight},
 	}).One(&v)
+
 	if err != nil {
 		fmt.Println("数据库查询货轮失败", err)
 		return nil, err

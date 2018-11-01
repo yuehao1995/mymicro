@@ -6,6 +6,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"log"
 	pb "mymicro/shippy/consignment-service/proto/consignment"
+	"mymicro/shippy/consignment-service/util"
 	vesselPb "mymicro/shippy/vessel-service/proto/vessel"
 )
 
@@ -32,8 +33,25 @@ func (h *handler) CreateConsignment(ctx context.Context, req *pb.Consignment, re
 	}
 	vResp, err := h.vesselClient.FindAvailable(context.Background(), vReq)
 	if err != nil {
-		fmt.Println("35创建货物失败:", err)
-		return err
+		if mgo.ErrNotFound.Error() == err.Error() {
+			vesselNew := &vesselPb.Vessel{
+				Id:        util.NewUUID().Hex(),
+				Capacity:  int32(len(req.Containers) * 2),
+				MaxWeight: req.Weight / 2,
+				Name:      "货轮",
+				Available: true,
+				OwerId:    "00001",
+			}
+			h.vesselClient.Create(context.Background(), vesselNew)
+			vResp, err = h.vesselClient.FindAvailable(context.Background(), vReq)
+			if err != nil {
+				fmt.Println("真创建货物失败:", err)
+				return err
+			}
+		} else {
+			fmt.Println("35创建货物失败:", err)
+			return err
+		}
 	}
 
 	// 货物被承运
