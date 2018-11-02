@@ -16,10 +16,10 @@ func main() {
 	client := pb.NewUserServiceClient("UserService", microclient.DefaultClient)
 
 	// 暂时将用户信息写死在代码中
-	name := "Ewan Valentine"
-	email := "ewan.valentine89@gmail.com"
-	password := "test123"
-	company := "BBC"
+	name := "zhang yuehao"
+	email := "3313246150@11.com"
+	password := "test123456"
+	company := "zcm"
 
 	resp, err := client.Create(context.TODO(), &pb.User{
 		Name:     name,

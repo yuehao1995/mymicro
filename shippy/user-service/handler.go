@@ -2,14 +2,18 @@ package main
 
 import (
 	"context"
+	"github.com/micro/go-micro"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	pb "mymicro/shippy/user-service/proto/user"
 )
 
+const topic = "user.created"
+
 type handler struct {
 	repo         Repository
 	tokenService Authable
+	Publisher    micro.Publisher
 }
 
 func (h *handler) Create(ctx context.Context, req *pb.User, resp *pb.Response) (err error) {
@@ -22,6 +26,10 @@ func (h *handler) Create(ctx context.Context, req *pb.User, resp *pb.Response) (
 		return nil
 	}
 	resp.User = req
+
+	if err := h.Publisher.Publish(ctx, req); err != nil {
+		return err
+	}
 	return nil
 }
 
