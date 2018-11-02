@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/micro/go-micro"
+	"github.com/micro/go-micro/metadata"
 	"io/ioutil"
 	"log"
 	pb "mymicro/shippy/consignment-service/proto/consignment"
@@ -43,15 +44,22 @@ func main() {
 		infoFile = os.Args[1]
 	}
 
+	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyIjp7ImlkIjoiZmQxZGYyYzEtYjEyOC00ZmJmLTkyNDEtOWY3ZDM3ODM3ZjFiIiwibmFtZSI6IkV3YW4gVmFsZW50aW5lIiwiY29tcGFueSI6IkJCQyIsImVtYWlsIjoiZXdhbi52YWx" +
+		"lbnRpbmU4OUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQxMCQ0bHZ2UXprcWJzMmhGMHVrU0gvVGp1SU5YWHl1VEFPY0hvWTZpRXBkcmQvTE1pU0M1dWZiZSJ9LCJleHAiOjE1NDE0MDYwMDIsImlzcyI6IlVzZXJTZXJ2aWNlIn0.OChJk_Vj6eiUWckgqDTM7GfIs1cofCxdkR6" +
+		"R99hASLE"
+
 	// 解析货物信息
 	consignment, err := parseFile(infoFile)
 	if err != nil {
 		log.Fatalf("parse info file error: %v", err)
 	}
+	tokenContext := metadata.NewContext(context.Background(), map[string]string{
+		"token": token,
+	})
 
 	// 调用 RPC
 	// 将货物存储到我们自己的仓库里
-	resp, err := client.CreateConsignment(context.Background(), consignment)
+	resp, err := client.CreateConsignment(tokenContext, consignment)
 	if err != nil {
 		log.Fatalf("create consignment error: %v", err)
 	}
@@ -61,7 +69,7 @@ func main() {
 	log.Printf("resp: %v", resp)
 
 	// 列出目前所有托运的货物
-	resp, err = client.GetConsignments(context.Background(), &pb.GetRequest{})
+	resp, err = client.GetConsignments(tokenContext, &pb.GetRequest{})
 	if err != nil {
 		log.Fatalf("failed to list consignments: %v", err)
 	}
